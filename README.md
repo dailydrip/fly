@@ -83,10 +83,30 @@ You can run workers directly:
 Fly.run(:resize, input, %{size: "100x"})
 ```
 
-### About [DailyDrip](https://www.dailydrip.com)
+## About [DailyDrip](https://www.dailydrip.com)
 
 [![DailyDrip](https://github.com/dailydrip/fly/raw/master/assets/dailydrip.png)](https://www.dailydrip.com)
 
 > This code is part of [Elixir Drips](https://www.dailydrip.com/topics/elixir/),
 > a daily continous learning website where you can just spend 5 minutes a day to
 > learn more about Elixir (or other things!)
+
+## TODO
+
+Here are the items I plan to add, in no particular order:
+
+- [ ] Support workers that don't care about URLs at all - really, the workers
+  should be responsible for fetching the URL, rather than the plug.
+- [ ] Cache layer
+  - Add an [LRU Cache](https://en.wikipedia.org/wiki/Cache_replacement_policies#LRU)
+  - This cache would be in our supervision tree, of course.
+- [ ] Output file caching
+  - We need to support caching output files, so that when someone requests a
+    job that's already been worked, they get it from the cache rather than
+    generating it via compute again.
+- [ ] Input file caching
+  - I'd like to add an additional caching layer for the input files.  This way,
+    if we add something like an image filter generator, it only downloads the
+    source file one time.
+- [ ] Image filter worker
+  - [example in python using imagemagick](https://github.com/acoomans/instagram-filters)
