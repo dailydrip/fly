@@ -1,6 +1,8 @@
 # Fly
 > A project from [DailyDrip](https://www.dailydrip.com).
 
+[![See it on hex!](https://img.shields.io/hexpm/dt/fly.svg)](http://hex.pm/packages/fly)
+
 Fly is an OTP application you can use to transform files on the fly with various
 workers.
 
