@@ -10,30 +10,32 @@ Just-in-Time transformations of a given file.
 
 For now, the API will certainly change as it's *extremely early in development*.
 
-## Installation
+## Usage in a Phoenix Application
 
-The package can be installed by doing the following:
+There's [an example application here](http://github.com/dailydrip/fly_example).
 
-  1. Add `fly` to your list of dependencies in `mix.exs`:
+In general, the setup is trivial.  First, add the dependency and start the `fly`
+application:
 
-    ```elixir
-    def deps do
-      [{:fly, "~> 0.1.0"}]
-    end
-    ```
+```elixir
+  def application do
+    [
+      mod: {YourAppHere, []},
+      applications: [
+        # ...
+        :fly,
+      ]
+    ]
+  end
+  defp deps do
+    [ # ...
+      {:fly, path: "../fly"},
+    ]
+  end
+```
 
-  2. Ensure `fly` is started before your application:
-
-    ```elixir
-    def application do
-      [applications: [:fly]]
-    end
-    ```
-
-## Configuration
-
-Here's an example configuration - you'll need **something** configured for the
-app, so use this until you know more :)
+Then you'll want to configure Fly, in `config/config.exs`.  Here's an example
+configuration:
 
 ```elixir
 config :fly, :workers,
@@ -44,6 +46,29 @@ config :fly, :workers,
   }
 ```
 
+Finally, forward requests to `Fly.Plug`.  In `web/router.ex`:
+
+```elixir
+defmodule YourAppHere.Router do
+  use YourAppHere.Web, :router
+  # ...
+  forward "/fly", Fly.Plug
+  # ...
+end
+```
+
+Now, `Fly` is ready to take your requests.  You can create a URL that will route
+a request through `Fly.Plug`:
+
+```html
+<img src="/fly/resize?url=http://www.rd.com/wp-content/uploads/sites/2/2016/04/01-cat-wants-to-tell-you-laptop.jpg&size=400x" />
+```
+
+Now if you load the page, you'll see the image in that URL returned, resized to
+400 px wide and respecting its aspect ratio, using imagemagick to do the
+resizing (but this is just a function of the `resize` worker you configured
+earlier!)
+
 ## Building a worker
 
 You can look at the [Fly.Worker.Resize](lib/fly/worker/resize.ex) worker to see
@@ -52,7 +77,7 @@ configuration.  An example is in [this project's config.exs](config/config.exs).
 
 ## Using a worker
 
-For now, you can just run workers directly:
+You can run workers directly:
 
 ```elixir
 Fly.run(:resize, input, %{size: "100x"})
