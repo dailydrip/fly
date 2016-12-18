@@ -15,7 +15,11 @@ defmodule Fly.Plug do
         case LruCache.get(:fly_cache, cache_key) do
           nil ->
             url = conn.query_params["url"]
-            file = get(url)
+            input =
+              case url do
+                nil -> ""
+                _ -> get(url)
+              end
 
             options =
               conn.query_params
@@ -23,7 +27,7 @@ defmodule Fly.Plug do
               |> Enum.map(fn({k, v}) -> {String.to_existing_atom(k), v} end)
               |> Map.new
 
-            Fly.run_cached(cache_key, config_atom, file, options)
+            Fly.run_cached(cache_key, config_atom, input, options)
           v -> v
         end
 
