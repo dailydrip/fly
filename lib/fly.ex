@@ -6,19 +6,13 @@ defmodule Fly do
   use Application
   require Logger
 
-  # See http://elixir-lang.org/docs/stable/elixir/Application.html
-  # for more information on OTP Applications
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
-    # Define workers and child supervisors to be supervised
     children = [
-      # Starts a worker by calling: Fly.Worker.start_link(arg1, arg2, arg3)
-      # worker(Fly.Worker, [arg1, arg2, arg3]),
+      worker(LruCache, [:fly_cache, 1_000]),
     ]
 
-    # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
-    # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Fly.Supervisor]
     Supervisor.start_link(children, opts)
   end
@@ -49,6 +43,20 @@ defmodule Fly do
         You can look up the configuration options for the module you're trying to use in
         its documentation.
         """
+    end
+  end
+
+  @doc """
+  Run the worker, checking and filling the cache given a cache key.
+  """
+  @spec run_cached(binary(), atom(), binary(), map()) :: binary()
+  def run_cached(cache_key, config_atom, input, options \\ %{}) do
+    case LruCache.get(:fly_cache, cache_key) do
+      nil ->
+        result = run(config_atom, input, options)
+        LruCache.put(:fly_cache, cache_key, result)
+        result
+      val -> val
     end
   end
 
