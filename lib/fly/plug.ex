@@ -33,7 +33,7 @@ defmodule Fly.Plug do
   def call(conn, []), do: conn
 
   defp get(url) do
-    %{body: body} = Fly.Http.get(url)
+    %{body: body} = Fly.Http.get(url, opts: [recv_timeout: 150_000])
     body
   end
 end

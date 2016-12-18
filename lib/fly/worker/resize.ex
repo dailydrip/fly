@@ -19,7 +19,7 @@ defmodule Fly.Worker.Resize do
     # - We're also passing "-strip" so that we don't write ancillary metadata
     #   like the modification time into the PNG itself.
     %Porcelain.Result{out: output, status: status} =
-      Porcelain.exec("convert", ["-", "-strip", "-resize", size,  "-"], [in: input, out: :string])
+      Porcelain.exec("convert", ["-", "-strip", "-resize", size, "-"], [in: input, out: :string])
 
     output
   end
