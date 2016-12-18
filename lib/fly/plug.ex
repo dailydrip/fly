@@ -11,16 +11,22 @@ defmodule Fly.Plug do
       config_atom = String.to_existing_atom(config_atom_string)
       conn = fetch_query_params(conn)
       cache_key = {config_atom, conn.query_params}
-      url = conn.query_params["url"]
-      file = get(url)
+      result =
+        case LruCache.get(:fly_cache, cache_key) do
+          nil ->
+            url = conn.query_params["url"]
+            file = get(url)
 
-      options =
-        conn.query_params
-        |> Map.delete("url")
-        |> Enum.map(fn({k, v}) -> {String.to_existing_atom(k), v} end)
-        |> Map.new
+            options =
+              conn.query_params
+              |> Map.delete("url")
+              |> Enum.map(fn({k, v}) -> {String.to_existing_atom(k), v} end)
+              |> Map.new
 
-      result = Fly.run_cached(cache_key, config_atom, file, options)
+            Fly.run_cached(cache_key, config_atom, file, options)
+          v -> v
+        end
+
       conn
         |> resp(200, result)
     rescue
