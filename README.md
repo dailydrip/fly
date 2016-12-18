@@ -110,3 +110,7 @@ Here are the items I plan to add, in no particular order:
     source file one time.
 - [ ] Image filter worker
   - [example in python using imagemagick](https://github.com/acoomans/instagram-filters)
+
+## License
+
+This project is licensed under [the MIT License](./LICENSE).
