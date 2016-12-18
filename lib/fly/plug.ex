@@ -7,7 +7,7 @@ defmodule Fly.Plug do
   def init([]), do: []
 
   def call(%Conn{path_info: [config_atom_string]} = conn, []) do
-    try do
+    #try do
       config_atom = String.to_existing_atom(config_atom_string)
       conn = fetch_query_params(conn)
       cache_key = {config_atom, conn.query_params}
@@ -33,13 +33,13 @@ defmodule Fly.Plug do
 
       conn
         |> resp(200, result)
-    rescue
-      e in ArgumentError ->
-        Logger.error (inspect e)
-        Logger.error "Zomg no good: #{inspect config_atom_string}"
-        Logger.error "here's conn: #{inspect conn}"
-        conn
-    end
+    # rescue
+    #   e in ArgumentError ->
+    #     Logger.error (inspect e)
+    #     Logger.error "Zomg no good: #{inspect config_atom_string}"
+    #     Logger.error "here's conn: #{inspect conn}"
+    #     conn
+    # end
   end
   def call(conn, []), do: conn
 
