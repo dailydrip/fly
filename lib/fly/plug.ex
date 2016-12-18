@@ -18,7 +18,7 @@ defmodule Fly.Plug do
             input =
               case url do
                 nil -> ""
-                _ -> get(url)
+                _ -> get_cached(url)
               end
 
             options =
@@ -46,5 +46,13 @@ defmodule Fly.Plug do
   defp get(url) do
     %{body: body} = Fly.Http.get(url, opts: [recv_timeout: 150_000])
     body
+  end
+
+  defp get_cached(url) do
+    case LruCache.get(:fly_cache, url) do
+      nil ->
+        get(url)
+      v -> v
+    end
   end
 end
