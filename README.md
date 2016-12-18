@@ -85,7 +85,7 @@ Fly.run(:resize, input, %{size: "100x"})
 
 ### About [DailyDrip](https://www.dailydrip.com)
 
-[![DailyDrip](http://github.com/dailydrip/fly/raw/master/assets/dailydrip.png)](https://www.dailydrip.com)
+[![DailyDrip](https://github.com/dailydrip/fly/raw/master/assets/dailydrip.png)](https://www.dailydrip.com)
 
 > This code is part of [Elixir Drips](https://www.dailydrip.com/topics/elixir/),
 > a daily continous learning website where you can just spend 5 minutes a day to
